@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # Test cases for tournament.py
+# following the solution from reference [1]
+#
 
 from tournament import *
 
