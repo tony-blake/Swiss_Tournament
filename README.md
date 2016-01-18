@@ -10,3 +10,7 @@ Run tournament.py from command line by typing "python tournament.py"
 
 To check for bugs in code
 Run tournament_test.py from command line using  "python tournament_test.py"
+
+# References
+
+[1] B. Brandt, rdb-fullstack, (2015), GitHub repository, https://github.com/benbrandt/fullstack-nanodegree-vm/tree/master/vagrant/tournament
