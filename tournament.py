@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # 
 # tournament.py -- implementation of a Swiss-system tournament
+# following the solution from reference [1]
 #
 
 import psycopg2
