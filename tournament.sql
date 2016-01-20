@@ -5,6 +5,7 @@
 --
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
+-- meaningless comment to make new commit
 
 CREATE TABLE players ( id SERIAL,
                        name TEXT );
