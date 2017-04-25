@@ -41,10 +41,10 @@ def deleteCompetitions():
 
 
 def deleteScoreboard():
-    """Remove all the scoreboard records from the database."""
+    """Remove all the scoreboard3 records from the database."""
     DB = connect()
     c = DB.cursor()
-    c.execute("DELETE FROM scoreboard")
+    c.execute("DELETE FROM scoreboard3")
     DB.commit()
     DB.close()
 
@@ -69,7 +69,7 @@ def countPlayers(content):
     DB = connect()
     c = DB.cursor()
     query = """SELECT count(player) AS num
-             FROM scoreboard
+             FROM scoreboard3
              WHERE competition = %s"""
     c.execute(query, (content,))
     players = c.fetchone()[0]
@@ -90,10 +90,10 @@ def registerPlayer(name, content):
     DB = connect()
     c = DB.cursor()
     player = "INSERT INTO players (name) VALUES (%s) RETURNING id"
-    scoreboard = "INSERT INTO scoreboard (competition,player,score,matches,bye) VALUES (%s,%s,%s,%s,%s)"
+    scoreboard3 = "INSERT INTO scoreboard3 (competition,player,score,matches,bye) VALUES (%s,%s,%s,%s,%s)"
     c.execute(player, (name,))
     playerid = c.fetchone()[0]
-    c.execute(scoreboard, (content,playerid,0,0,0))
+    c.execute(scoreboard3, (content,playerid,0,0,0))
     DB.commit()
     DB.close()
 
@@ -115,7 +115,7 @@ def playerStandings(content):
     c = DB.cursor()
     players = """SELECT s.player, p.name, s.score, s.matches, s.bye,
                     (SELECT SUM(s2.score)
-                     FROM scoreboard AS s2
+                     FROM scoreboard3 AS s2
                      WHERE s2.player IN (SELECT loser
                                      FROM matches
                                      WHERE winner = s.player
@@ -124,7 +124,7 @@ def playerStandings(content):
                                  FROM matches
                                  WHERE loser = s.player
                                  AND competition = %s)) AS owm
-                 FROM scoreboard AS s
+                 FROM scoreboard3 AS s
                  INNER JOIN players AS p on p.id = s.player
                  WHERE competition = %s
                  ORDER BY s.score DESC, owm DESC, s.matches DESC"""
@@ -156,8 +156,8 @@ def reportMatch(content, winner, loser, draw='FALSE'):
     DB = connect()
     c = DB.cursor()
     ins = "INSERT INTO matches (competition, winner, loser, draw) VALUES (%s,%s,%s,%s)"
-    win = "UPDATE scoreboard SET score = score+%s, matches = matches+1 WHERE player = %s AND competition = %s"
-    los = "UPDATE scoreboard SET score = score+%s, matches = matches+1 WHERE player = %s AND competition = %s"
+    win = "UPDATE scoreboard3 SET score = score+%s, matches = matches+1 WHERE player = %s AND competition = %s"
+    los = "UPDATE scoreboard3 SET score = score+%s, matches = matches+1 WHERE player = %s AND competition = %s"
     c.execute(ins, (content, winner, loser, draw))
     c.execute(win, (w_points, winner, content))
     c.execute(los, (l_points, loser, content))
@@ -173,7 +173,7 @@ def hasBye(id, content):
     DB = connect()
     c= DB.cursor()
     query = """SELECT bye
-             FROM scoreboard
+             FROM scoreboard3
              WHERE player = %s
              AND competition = %s"""
     c.execute(query, (id,content))
@@ -193,7 +193,7 @@ def reportBye(player, content):
     """
     DB = connect()
     c = DB.cursor()
-    bye = "UPDATE scoreboard SET score = score+3, bye=bye+1 WHERE player = %s AND competition = %s"
+    bye = "UPDATE scoreboard3 SET score = score+3, bye=bye+1 WHERE player = %s AND competition = %s"
     c.execute(bye, (player,content))
     DB.commit()
     DB.close()

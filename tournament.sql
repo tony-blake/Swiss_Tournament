@@ -21,6 +21,50 @@ CREATE TABLE competitions ( id SERIAL,
 
 CREATE TABLE scoreboard ( competition INTEGER,
                           player INTEGER,
-                          score INTEGER,
-                          matches INTEGER,
                           bye INTEGER );
+
+
+--  Make view to show the winners and the scores that reflect the 3 points for a winning match
+CREATE VIEW makestandings AS
+SELECT DISTINCT winner, 3*COUNT(winner) AS score FROM matches GROUP BY winner;
+
+-- Rename winner column so that it says player column
+ALTER TABLE makestandings RENAME COLUMN winner TO player;
+
+-- Make view that shows the losers and the scores they get from a losing match (also shows that a match was played)
+CREATE VIEW losers AS
+SELECT DISTINCT loser, COUNT(loser) AS matches FROM matches GROUP BY loser;
+
+-- Rename loser column so that it says player column
+ALTER TABLE losers RENAME COLUMN loser TO player;
+
+--Make view to show the winners and a unit scores which is evident of having played a match
+CREATE VIEW winners AS
+SELECT DISTINCT winner, COUNT(winner) AS matches FROM matches GROUP BY winner;
+
+-- Rename winners column so that it says player column
+ALTER TABLE winners RENAME COLUMN winner TO player;
+
+-- Combine winners and losers table into single stacked table
+CREATE VIEW allthegames AS
+SELECT player, matches FROM winners GROUP BY player, matches UNION ALL SELECT player, matches FROM losers GROUP BY player, matches;
+
+
+-- Sum rows for multiple values of each player (this will show the number of matches played for each player)
+CREATE VIEW numberofmatches AS
+SELECT
+   player,
+   SUM(matches) AS matches
+FROM allthegames
+GROUP BY player;
+
+-- Combine the number of matches view with scores for each player 
+CREATE VIEW matchesandscores AS
+SELECT nofm.player, nofm.matches, mkstd.score FROM makestandings AS mkstd RIGHT JOIN numberofmatches AS nofm ON nofm.player=mkstd.player ORDER BY nofm.player;
+
+-- Combine matches and scores view with empty scoreboard table (this scoreboard table only show competion number, player and bye status) 
+CREATE VIEW scoreboard2 AS
+SELECT s.competition, ms.player, ms.score, ms.matches, s.bye FROM scoreboard AS s JOIN matchesandscores AS ms ON s.player=ms.player ORDER BY ms.player; 
+
+-- Convert scoreboard into table so it can be updated when running "tournament_test.py" script
+CREATE TABLE scoreboard3 AS SELECT * FROM scoreboard2;
