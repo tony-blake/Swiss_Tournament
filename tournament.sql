@@ -62,9 +62,26 @@ GROUP BY player;
 CREATE VIEW matchesandscores AS
 SELECT nofm.player, nofm.matches, mkstd.score FROM makestandings AS mkstd RIGHT JOIN numberofmatches AS nofm ON nofm.player=mkstd.player ORDER BY nofm.player;
 
+-- replace empty spaces with zero
+create VIEW matchesandscores2 AS
+SELECT player, matches, coalesce(score, 0) from matchesandscores;
+
+-- Rename coalesce column so that it says score column
+ALTER TABLE matchesandscores2 RENAME COLUMN coalesce TO score;
+
+
 -- Combine matches and scores view with empty scoreboard table (this scoreboard table only show competion number, player and bye status) 
 CREATE VIEW scoreboard2 AS
-SELECT s.competition, ms.player, ms.score, ms.matches, s.bye FROM scoreboard AS s JOIN matchesandscores AS ms ON s.player=ms.player ORDER BY ms.player; 
+SELECT s.competition, ms.player, ms.score, ms.matches, s.bye FROM scoreboard AS s JOIN matchesandscores2 AS ms ON s.player=ms.player ORDER BY ms.player; 
 
 -- Convert scoreboard into table so it can be updated when running "tournament_test.py" script
 CREATE TABLE scoreboard3 AS SELECT * FROM scoreboard2;
+
+
+
+
+
+
+
+
+--CREATE TRIGGER_trig matchesandscores2 INSTEAD OF INSERT OR UPDATE OR DELETE ON matchesandscores2 matchesandscores2 FOR EACH ROW EXECUTE PROCEDURE matchesandscore2();
