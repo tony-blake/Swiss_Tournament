@@ -1,7 +1,7 @@
 # Swiss_Tournament
 Second Project of Udacity Full Stack ND
 
-## Requriements
+## Requirements
 vagrant virtual machine with postgreSQL installed
 
 The following files should be in this folder
