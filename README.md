@@ -15,7 +15,7 @@ The following files should be in this folder
 
 ## To Run
 
-Move up a level in the folder hierarchy (```cd ..```)  so that the follwing files and folder are present
+Move up a level in the folder hierarchy (```cd ..```)  so that the following files and folder are present
 
 
 ```bash
@@ -28,7 +28,7 @@ Move up a level in the folder hierarchy (```cd ..```)  so that the follwing file
 
 ```bash
 
-vagrant uo    # boots up vagrant virtual box
+vagrant up    # boots up vagrant virtual box
 vagrant ssh   # login to vagrant
 cd /vagrant   # change to vagrant directory
 cd Swiss_Tournament # change to project directory
