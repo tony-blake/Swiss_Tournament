@@ -7,21 +7,22 @@
 -- these lines here.
 -- meaningless comment to make new commit
 
-CREATE TABLE players ( id SERIAL,
+CREATE TABLE players ( id SERIAL PRIMARY KEY,
                        name TEXT );
 
-CREATE TABLE matches ( matchid SERIAL,
-                       competition INTEGER,
-                       winner INTEGER,
-                       loser INTEGER,
+CREATE TABLE matches ( matchid SERIAL PRIMARY KEY,
+                       competition  INTEGER,
+                       winner  INTEGER REFERENCES players(id),
+                       loser INTEGER REFERENCES players(id),
                        draw BOOLEAN );
 
-CREATE TABLE competitions ( id SERIAL,
+CREATE TABLE competitions ( id SERIAL PRIMARY KEY,
                            name TEXT );
 
-CREATE TABLE scoreboard ( competition INTEGER,
+CREATE TABLE scoreboard ( competition INTEGER REFERENCES competitions(id),
                           player INTEGER,
-                          bye INTEGER );
+                          bye INTEGER,
+                          PRIMARY KEY (bye));
 
 
 --  Make view to show the winners and the scores that reflect the 3 points for a winning match
